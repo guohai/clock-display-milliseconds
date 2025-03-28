@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Clock displays Milliseconds</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<body onLoad="initClock()">
+
+  <div id="time_panel">
+    <a id="mon">01</a> /
+    <a id="d">1</a>,
+    <a id="y">2024</a><br />
+    <a id="h">12</a> :
+    <a id="m">00</a> :
+    <a id="s">00</a> .
+    <a id="mi">000</a>
+  </div>
+
+  <div id="style_controls">
+    <button onclick="changeBackground()">B</button>
+    <button onclick="changeFontSize(5)">+</button>
+    <button onclick="changeFontSize(-5)">-</button>
+  </div>
+
+  <script  src="./script.js"></script>
+
+</body>
+</html>

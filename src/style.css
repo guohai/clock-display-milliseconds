@@ -1,0 +1,32 @@
+body {
+  background-color: #212020;
+}
+
+#time_panel {
+  font: bold 60px/150% 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans',
+    'Helvetica Neue', Arial, sans-serif;
+  text-align: left;
+  width: 40%;
+  margin: 80px auto;
+  color: #fff;
+  border-left: 5px solid #ca1e1e;
+  border-bottom: 5px solid #ca1e1e;
+  padding: 10px;
+  box-shadow: -10px 10px 20px #00ffff;
+}
+
+#mi {
+  font-size: 1.5em;
+}
+
+#style_controls {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#style_controls button {
+  font-size: 20px;
+  padding: 10px 20px;
+  margin: 0 20px;
+  cursor: pointer;
+}
