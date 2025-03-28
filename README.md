@@ -1,2 +1,2 @@
-# clock-display-milliseconds-as-a-three-digit-number
+# clock-display-milliseconds
 Clock display miniseconds
