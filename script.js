@@ -20,6 +20,16 @@ const bgConfigs = [
 
 let currentBgIndex = 0;
 
+function requestFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.warn(`Failed to switch to Fullscreen: ${err.message}`);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
 function changeBackground() {
   currentBgIndex = (currentBgIndex + 1) % bgConfigs.length;
   const config = bgConfigs[currentBgIndex];
