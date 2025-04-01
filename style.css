@@ -4,6 +4,24 @@ body {
   padding: 0;
 }
 
+video#dynamic_bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  object-fit: cover;
+}
+
+video#ios_awake_hack {
+  position: fixed;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  z-index: -999;
+}
+
 #time_panel {
   font: bold 60px/150% 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans',
     'Helvetica Neue', Arial, sans-serif;

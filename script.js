@@ -12,32 +12,100 @@ function changeFontSize(delta) {
 }
 
 const bgConfigs = [
-  { bg: '#212020', color: '#ffffff', borderColor: '#ca1e1e' }, // Black + White
-  { bg: '#cc0000', color: '#a2c4f5', borderColor: '#212020' }, // Red + Gray
-  { bg: '#00cc00', color: '#000000', borderColor: '#ffffff' }, // Green + Black
-  { bg: '#0033cc', color: '#ffffff', borderColor: '#ff00ff' }, // Blue + White
+  { bg: '#212020', color: '#ffffff', borderColor: '#ca1e1e', video: null }, // Black + White
+  { bg: '#cc0000', color: '#a2c4f5', borderColor: '#212020', video: null }, // Red + Gray
+  { bg: '#00cc00', color: '#000000', borderColor: '#ffffff', video: null }, // Green + Black
+  { bg: '#0033cc', color: '#ffffff', borderColor: '#ff00ff', video: null }, // Blue + White
+  {
+    bg: '#000000',
+    color: '#ffffff',
+    borderColor: '#ff9900',
+    video:
+      'https://repo.jellyfin.org/test-videos/HDR/HDR10/HEVC/Test%20Jellyfin%204K%20HEVC%20HDR10%2050M.mp4',
+  }, // Dynamic Background
 ];
 
 let currentBgIndex = 0;
 
-function requestFullScreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch((err) => {
-      console.warn(`Failed to switch to Fullscreen: ${err.message}`);
-    });
-  } else {
-    document.exitFullscreen();
+async function enterFullscreenAndWakeLock() {
+  const el = document.documentElement;
+  const rfs =
+    el.requestFullscreen ||
+    el.webkitRequestFullscreen ||
+    el.mozRequestFullScreen ||
+    el.msRequestFullscreen;
+  if (rfs) {
+    try {
+      await rfs.call(el);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const silentVideo = document.getElementById('ios_awake_hack');
+        await silentVideo.play();
+      } else {
+        await requestWakeLock();
+      }
+    } catch (err) {
+      console.warn('Fullscreen/WakeLock error:', err);
+    }
+  }
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => {
+        console.log('Wake Lock was released');
+      });
+    } else {
+      console.warn('Wake Lock API not supported.');
+    }
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+  }
+}
+
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+function handleFullscreenChange() {
+  const isFullscreen =
+    document.fullscreenElement || document.webkitFullscreenElement;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (!isFullscreen) {
+    if (!isIOS && wakeLock !== null) {
+      wakeLock.release().then(() => {
+        console.log('Wake Lock released after exiting fullscreen');
+        wakeLock = null;
+      });
+    } else if (isIOS) {
+      const silentVideo = document.getElementById('ios_awake_hack');
+      silentVideo.pause();
+      silentVideo.currentTime = 0;
+    }
   }
 }
 
 function changeBackground() {
   currentBgIndex = (currentBgIndex + 1) % bgConfigs.length;
   const config = bgConfigs[currentBgIndex];
-  document.body.style.backgroundColor = config.bg;
   const panel = document.getElementById('time_panel');
+  const video = document.getElementById('dynamic_bg');
+
+  // Apply colors
+  document.body.style.backgroundColor = config.bg;
   panel.style.color = config.color;
   panel.style.borderBottomColor = config.borderColor;
   panel.style.borderLeftColor = config.borderColor;
+
+  // Apply dynamic background when available
+  if (config.video) {
+    video.src = config.video;
+    video.style.display = 'block';
+  } else {
+    video.style.display = 'none';
+    video.src = ''; // Optional: stop video if not needed
+  }
 }
 
 function updateClock() {
@@ -66,7 +134,7 @@ function updateClock() {
   var tags = ['mon', 'd', 'y', 'h', 'm', 's', 'mi'],
     corr = [
       (mo + 1).padding(2),
-      dy,
+      dy.padding(2),
       yr,
       hou.padding(2),
       min.padding(2),

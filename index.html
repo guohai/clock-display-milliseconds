@@ -9,9 +9,14 @@
 <body>
 <body onLoad="initClock()">
 
+  <video id="dynamic_bg" autoplay muted loop playsinline></video>
+  <video id="ios_awake_hack" autoplay muted loop playsinline>
+    <source src="https://repo.jellyfin.org/test-videos/HDR/HDR10/HEVC/Test%20Jellyfin%201080p%20HEVC%20HDR10%2010M.mp4" type="video/mp4" />
+  </video>
+
   <div id="time_panel">
     <a id="mon">01</a> /
-    <a id="d">1</a>,
+    <a id="d">01</a>,
     <a id="y">2024</a><br />
     <a id="h">12</a> :
     <a id="m">00</a> :
@@ -20,7 +25,7 @@
   </div>
 
   <div id="style_controls">
-    <button onclick="requestFullScreen()">F</button>
+    <button onclick="enterFullscreenAndWakeLock()">F</button>
     <button onclick="changeBackground()">B</button>
     <button onclick="changeFontSize(5)">+</button>
     <button onclick="changeFontSize(-5)">-</button>
